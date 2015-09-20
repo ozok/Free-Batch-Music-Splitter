@@ -8,7 +8,9 @@ uses
   Vcl.Mask, JvExMask, JvToolEdit, Vcl.ExtCtrls, JvSpin, Vcl.Menus, ShellAPI,
   JvExControls, JvArrowButton, JvComponentBase, JvSearchFiles, JvBaseDlg,
   JvBrowseFolder, StrUtils, System.Win.TaskbarCore, Vcl.Taskbar,
-  JvComputerInfoEx, IniFiles, JvDragDrop;
+  JvComputerInfoEx, IniFiles, JvDragDrop, IdBaseComponent, IdThreadComponent,
+  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, JvUrlListGrabber,
+  JvUrlGrabbers;
 
 type
   TMainForm = class(TForm)
@@ -53,8 +55,6 @@ type
     A7: TMenuItem;
     A8: TMenuItem;
     C1: TMenuItem;
-    C2: TMenuItem;
-    D1: TMenuItem;
     FileSearch: TJvSearchFiles;
     OpenFolderDlg: TJvBrowseForFolderDialog;
     ProgressLabel: TLabel;
@@ -73,6 +73,9 @@ type
     Button2: TButton;
     Info: TJvComputerInfoEx;
     DragDrop1: TJvDragDrop;
+    DonateBtn: TButton;
+    UpdateCheckThread: TIdThreadComponent;
+    UpdateDownloader: TJvHttpUrlGrabber;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure StartBtnClick(Sender: TObject);
@@ -98,6 +101,10 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure DragDrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
     procedure A8Click(Sender: TObject);
+    procedure DonateBtnClick(Sender: TObject);
+    procedure C1Click(Sender: TObject);
+    procedure UpdateCheckThreadRun(Sender: TIdThreadComponent);
+    procedure UpdateDownloaderDoneStream(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string);
   private
     { Private declarations }
     FFileInfo: TFileInfoExtractor;
@@ -133,10 +140,15 @@ type
 var
   MainForm: TMainForm;
 
+const
+  VERSION_FILE_URL = 'http://downloads.sourceforge.net/project/free-batch-music-splitter/version.txt?r=&ts=1442779171&use_mirror=netcologne';
+  PROGRAM_VERSION = 1;
+  PORTABLE = False;
+
+
 implementation
 
 {$R *.dfm}
-{$DEFINE PORTABLE}
 
 uses UnitBusy, UnitLogs, UnitAbout;
 
@@ -201,7 +213,8 @@ begin
           LFileName := ExcludeTrailingBackslash(OpenFolderDlg.Directory) + '\' + LSR.Name;
           LFileExt := ExtractFileExt(LFileName).ToLower;
 
-          if (LFileExt = '.mp3') or (LFileExt = '.aac') or (LFileExt = '.ogg') or (LFileExt = '.opus') or (LFileExt = '.flac') or (LFileExt = '.alac') or (LFileExt = '.wv') or(LFileExt = '.wav') or (LFileExt = '.m4b') or (LFileExt = '.m4a') then
+          if (LFileExt = '.mp3') or (LFileExt = '.aac') or (LFileExt = '.ogg') or (LFileExt = '.opus') or (LFileExt = '.flac') or (LFileExt = '.alac') or (LFileExt = '.wv') or (LFileExt = '.wav') or
+            (LFileExt = '.m4b') or (LFileExt = '.m4a') then
           begin
             AddFile(LFileName);
           end;
@@ -389,6 +402,11 @@ begin
   end;
 end;
 
+procedure TMainForm.C1Click(Sender: TObject);
+begin
+  ShellExecute(0, 'open', PWideChar(ExtractFileDir(Application.ExeName) + '\changelog.txt'), nil, nil, SW_SHOWNORMAL);
+end;
+
 procedure TMainForm.ClearBtnClick(Sender: TObject);
 begin
   if FileList.Items.Count < 1 then
@@ -539,6 +557,11 @@ begin
   end;
 end;
 
+procedure TMainForm.DonateBtnClick(Sender: TObject);
+begin
+  ShellExecute(0, 'open', 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRHMQXUPKWVTU', nil, nil, SW_SHOWNORMAL);
+end;
+
 procedure TMainForm.DragDrop1Drop(Sender: TObject; Pos: TPoint; Value: TStrings);
 var
   i: Integer;
@@ -572,7 +595,8 @@ begin
         end
         else
         begin
-          if (LFileExt = '.mp3') or (LFileExt = '.aac') or (LFileExt = '.ogg') or (LFileExt = '.opus') or (LFileExt = '.flac') or (LFileExt = '.alac') or (LFileExt = '.wv') or(LFileExt = '.wav') or (LFileExt = '.m4b') or (LFileExt = '.m4a') then
+          if (LFileExt = '.mp3') or (LFileExt = '.aac') or (LFileExt = '.ogg') or (LFileExt = '.opus') or (LFileExt = '.flac') or (LFileExt = '.alac') or (LFileExt = '.wv') or (LFileExt = '.wav') or
+            (LFileExt = '.m4b') or (LFileExt = '.m4a') then
           begin
             AddFile(Value[i]);
           end;
@@ -928,6 +952,43 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateCheckThreadRun(Sender: TIdThreadComponent);
+begin
+  UpdateDownloader.Url := VERSION_FILE_URL;
+  UpdateDownloader.Start;
+
+  UpdateCheckThread.Terminate;
+end;
+
+procedure TMainForm.UpdateDownloaderDoneStream(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string);
+var
+  LVersionFileContent: string;
+  LVersionInt: integer;
+  LTmpList: TStringList;
+begin
+  LTmpList := TStringList.Create;
+  try
+    LTmpList.LoadFromStream(Stream);
+    if LTmpList.Count = 1 then
+    begin
+      LVersionFileContent := LTmpList[0].Trim;
+
+      if TryStrToInt(LVersionFileContent, LVersionInt) then
+      begin
+        if LVersionInt > PROGRAM_VERSION then
+        begin
+          if ID_YES = Application.MessageBox('There is a new version. Would you like to download it?', 'New Version', MB_ICONQUESTION or MB_YESNO) then
+          begin
+            ShellExecute(0, 'open', 'https://sourceforge.net/projects/free-batch-music-splitter/', nil, nil, SW_SHOWNORMAL);
+          end;
+        end;
+      end;
+    end;
+  finally
+    LTmpList.Free;
+  end;
+end;
+
 procedure TMainForm.FileListClick(Sender: TObject);
 var
   LItem: TFileListItem;
@@ -994,13 +1055,17 @@ begin
   end;
   FileSearch.RecurseDepth := MaxInt;
 
-{$IFDEF PORTABLE}
-  AppDataFolder := Info.Folders.AppData + '\FreeBatchMusicSplitter';
-  DefaultOutputFolder := Info.Folders.Personal + '\FreeBatchMusicSplitter';
-{$ELSE}
-  AppDataFolder := ExtractFileDir(Application.ExeName);
-  DefaultOutputFolder := AppDataFolder;
-{$ENDIF}
+  if not PORTABLE then
+  begin
+    AppDataFolder := Info.Folders.AppData + '\FreeBatchMusicSplitter';
+    DefaultOutputFolder := Info.Folders.Personal + '\FreeBatchMusicSplitter';
+  end
+  else
+  begin
+    AppDataFolder := ExtractFileDir(Application.ExeName);
+    DefaultOutputFolder := AppDataFolder;
+  end;
+
   ForceDirectories(AppDataFolder);
 end;
 
@@ -1028,6 +1093,10 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
   LoadSettings;
+  if CheckUpdatesBtn.Checked then
+  begin
+    UpdateCheckThread.Start;
+  end;
 end;
 
 procedure TMainForm.LoadSettings;

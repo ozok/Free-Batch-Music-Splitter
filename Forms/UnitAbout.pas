@@ -19,6 +19,8 @@ type
     Button3: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button3Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -33,6 +35,16 @@ implementation
 {$R *.dfm}
 
 uses UnitMain;
+
+procedure TAboutForm.Button1Click(Sender: TObject);
+begin
+  ShellExecute(0, 'open', 'https://sourceforge.net/projects/free-batch-music-splitter/', nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TAboutForm.Button2Click(Sender: TObject);
+begin
+  ShellExecute(0, 'open', 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WRHMQXUPKWVTU', nil, nil, SW_SHOWNORMAL);
+end;
 
 procedure TAboutForm.Button3Click(Sender: TObject);
 begin

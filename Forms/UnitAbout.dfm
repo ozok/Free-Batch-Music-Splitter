@@ -5,7 +5,7 @@ object AboutForm: TAboutForm
   Caption = 'About'
   ClientHeight = 205
   ClientWidth = 370
-  Color = clBtnFace
+  Color = clGradientActiveCaption
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -610,7 +610,7 @@ object AboutForm: TAboutForm
     Anchors = [akLeft, akBottom]
     Caption = 'Home'
     TabOrder = 0
-    ExplicitTop = 211
+    OnClick = Button1Click
   end
   object Button2: TButton
     Left = 89
@@ -620,7 +620,7 @@ object AboutForm: TAboutForm
     Anchors = [akLeft, akBottom]
     Caption = 'Donate'
     TabOrder = 1
-    ExplicitTop = 211
+    OnClick = Button2Click
   end
   object Button3: TButton
     Left = 287
@@ -631,7 +631,5 @@ object AboutForm: TAboutForm
     Caption = 'Close'
     TabOrder = 2
     OnClick = Button3Click
-    ExplicitLeft = 363
-    ExplicitTop = 211
   end
 end

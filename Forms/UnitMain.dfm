@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Free Batch Music Splitter'
-  ClientHeight = 446
-  ClientWidth = 948
+  ClientHeight = 394
+  ClientWidth = 957
   Color = clGradientActiveCaption
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -24,17 +24,19 @@ object MainForm: TMainForm
   object ProgressPanel: TPanel
     Left = 0
     Top = 0
-    Width = 948
-    Height = 446
+    Width = 957
+    Height = 394
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
     Visible = False
+    ExplicitWidth = 948
+    ExplicitHeight = 446
     DesignSize = (
-      948
-      446)
+      957
+      394)
     object ProgressLabel: TLabel
-      Left = 608
+      Left = 617
       Top = 13
       Width = 106
       Height = 13
@@ -42,12 +44,13 @@ object MainForm: TMainForm
       Anchors = [akTop, akRight]
       AutoSize = False
       Caption = '0/0'
+      ExplicitLeft = 608
     end
     object ProgressList: TListView
       Left = 8
       Top = 39
-      Width = 932
-      Height = 402
+      Width = 941
+      Height = 350
       Anchors = [akLeft, akTop, akRight, akBottom]
       Columns = <
         item
@@ -70,6 +73,8 @@ object MainForm: TMainForm
       ParentDoubleBuffered = False
       TabOrder = 0
       ViewStyle = vsReport
+      ExplicitWidth = 932
+      ExplicitHeight = 402
     end
     object StopBtn: TButton
       Left = 720
@@ -109,21 +114,25 @@ object MainForm: TMainForm
   object NormalPanel: TPanel
     Left = 0
     Top = 0
-    Width = 948
-    Height = 446
+    Width = 957
+    Height = 394
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 948
+    ExplicitHeight = 446
     DesignSize = (
-      948
-      446)
+      957
+      394)
     object Label1: TLabel
-      Left = 12
-      Top = 403
+      Left = 21
+      Top = 351
       Width = 71
       Height = 13
       Anchors = [akRight, akBottom]
       Caption = 'Output Folder:'
+      ExplicitLeft = 12
+      ExplicitTop = 403
     end
     object AddBtn: TJvArrowButton
       Left = 8
@@ -140,23 +149,27 @@ object MainForm: TMainForm
       FillFont.Style = []
     end
     object Bevel1: TBevel
-      Left = 720
-      Top = 269
+      Left = 729
+      Top = 263
       Width = 220
-      Height = 3
+      Height = 2
       Anchors = [akRight, akBottom]
-      Shape = bsTopLine
+      Shape = bsBottomLine
+      ExplicitLeft = 720
+      ExplicitTop = 320
     end
     object Label6: TLabel
-      Left = 720
-      Top = 281
+      Left = 729
+      Top = 274
       Width = 105
       Height = 13
       Anchors = [akRight, akBottom]
       Caption = 'Number of processes:'
+      ExplicitLeft = 720
+      ExplicitTop = 331
     end
     object StartBtn: TButton
-      Left = 720
+      Left = 729
       Top = 8
       Width = 220
       Height = 25
@@ -164,12 +177,13 @@ object MainForm: TMainForm
       Caption = 'Start'
       TabOrder = 0
       OnClick = StartBtnClick
+      ExplicitLeft = 720
     end
     object FileList: TListView
       Left = 8
       Top = 39
-      Width = 706
-      Height = 355
+      Width = 715
+      Height = 303
       Anchors = [akLeft, akTop, akRight, akBottom]
       Columns = <
         item
@@ -192,11 +206,13 @@ object MainForm: TMainForm
       TabOrder = 1
       ViewStyle = vsReport
       OnClick = FileListClick
+      ExplicitWidth = 706
+      ExplicitHeight = 355
     end
     object OutputFolderEdit: TJvDirectoryEdit
       Left = 89
-      Top = 400
-      Width = 770
+      Top = 348
+      Width = 779
       Height = 21
       DialogKind = dkWin32
       Flat = False
@@ -206,6 +222,8 @@ object MainForm: TMainForm
       Anchors = [akLeft, akRight, akBottom]
       TabOrder = 2
       Text = 'C:\data'
+      ExplicitTop = 400
+      ExplicitWidth = 770
     end
     object RemoveSelectedBtn: TButton
       Left = 132
@@ -226,18 +244,21 @@ object MainForm: TMainForm
       OnClick = ClearBtnClick
     end
     object SplitTypePages: TPageControl
-      Left = 720
+      Left = 729
       Top = 39
       Width = 220
-      Height = 162
-      ActivePage = TabSheet1
+      Height = 156
+      ActivePage = TabSheet2
       Anchors = [akTop, akRight, akBottom]
       TabOrder = 5
+      ExplicitLeft = 720
+      ExplicitHeight = 213
       object TabSheet1: TTabSheet
         Caption = 'According to Parts'
+        ExplicitHeight = 134
         DesignSize = (
           212
-          134)
+          128)
         object Label2: TLabel
           Left = 16
           Top = 19
@@ -274,9 +295,10 @@ object MainForm: TMainForm
       object TabSheet2: TTabSheet
         Caption = 'According to Duration'
         ImageIndex = 1
+        ExplicitHeight = 134
         DesignSize = (
           212
-          134)
+          128)
         object Label3: TLabel
           Left = 54
           Top = 46
@@ -347,29 +369,33 @@ object MainForm: TMainForm
       end
     end
     object ApplyToFileBtn: TButton
-      Left = 720
-      Top = 207
+      Left = 729
+      Top = 201
       Width = 220
       Height = 25
       Anchors = [akRight, akBottom]
       Caption = 'Apply Selected Method to Selected Files'
       TabOrder = 6
       OnClick = ApplyToFileBtnClick
+      ExplicitLeft = 720
+      ExplicitTop = 258
     end
     object OpenOutputBtn: TButton
-      Left = 865
-      Top = 398
+      Left = 874
+      Top = 346
       Width = 75
       Height = 25
       Anchors = [akRight, akBottom]
       Caption = 'Open'
       TabOrder = 7
       OnClick = OpenOutputBtnClick
+      ExplicitLeft = 865
+      ExplicitTop = 398
     end
     object StatusBar1: TStatusBar
       Left = 0
-      Top = 427
-      Width = 948
+      Top = 375
+      Width = 957
       Height = 19
       Panels = <
         item
@@ -380,10 +406,12 @@ object MainForm: TMainForm
           Text = '0 files'
           Width = 50
         end>
+      ExplicitTop = 427
+      ExplicitWidth = 948
     end
     object NumberOfProcessList: TComboBox
-      Left = 831
-      Top = 278
+      Left = 840
+      Top = 271
       Width = 109
       Height = 21
       Style = csDropDownList
@@ -408,10 +436,12 @@ object MainForm: TMainForm
         '14'
         '15'
         '16')
+      ExplicitLeft = 831
+      ExplicitTop = 328
     end
     object CheckUpdatesBtn: TCheckBox
-      Left = 720
-      Top = 305
+      Left = 729
+      Top = 298
       Width = 181
       Height = 17
       Anchors = [akRight, akBottom]
@@ -419,19 +449,23 @@ object MainForm: TMainForm
       Checked = True
       State = cbChecked
       TabOrder = 10
+      ExplicitLeft = 720
+      ExplicitTop = 355
     end
     object ApplyToAllBtn: TButton
-      Left = 720
-      Top = 238
+      Left = 729
+      Top = 232
       Width = 220
       Height = 25
       Anchors = [akRight, akBottom]
       Caption = 'Apply Selected Method to All Files'
       TabOrder = 11
       OnClick = ApplyToAllBtnClick
+      ExplicitLeft = 720
+      ExplicitTop = 289
     end
     object LogsBtn: TButton
-      Left = 614
+      Left = 623
       Top = 8
       Width = 100
       Height = 25
@@ -439,10 +473,11 @@ object MainForm: TMainForm
       Caption = 'Program Logs'
       TabOrder = 12
       OnClick = LogsBtnClick
+      ExplicitLeft = 614
     end
     object OutputFolderOptionsList: TComboBox
-      Left = 720
-      Top = 328
+      Left = 729
+      Top = 321
       Width = 220
       Height = 21
       Style = csDropDownList
@@ -454,6 +489,19 @@ object MainForm: TMainForm
         'Don'#39't create any folders in output'
         'Create one parent folder'
         'Create all folder structure')
+      ExplicitLeft = 720
+      ExplicitTop = 378
+    end
+    object DonateBtn: TButton
+      Left = 542
+      Top = 8
+      Width = 75
+      Height = 25
+      Anchors = [akTop, akRight]
+      Caption = 'Donate'
+      TabOrder = 14
+      OnClick = DonateBtnClick
+      ExplicitLeft = 533
     end
   end
   object OpenDialog: TOpenDialog
@@ -505,12 +553,7 @@ object MainForm: TMainForm
       end
       object C1: TMenuItem
         Caption = 'Change log'
-      end
-      object C2: TMenuItem
-        Caption = 'Check for updates'
-      end
-      object D1: TMenuItem
-        Caption = 'Donate'
+        OnClick = C1Click
       end
     end
   end
@@ -573,5 +616,25 @@ object MainForm: TMainForm
     OnDrop = DragDrop1Drop
     Left = 648
     Top = 96
+  end
+  object UpdateCheckThread: TIdThreadComponent
+    Active = True
+    Loop = False
+    Priority = tpNormal
+    StopMode = smTerminate
+    OnRun = UpdateCheckThreadRun
+    Left = 480
+    Top = 184
+  end
+  object UpdateDownloader: TJvHttpUrlGrabber
+    FileName = 'output.txt'
+    OutputMode = omStream
+    Agent = 'JEDI-VCL'
+    Port = 0
+    ProxyAddresses = 'proxyserver'
+    ProxyIgnoreList = '<local>'
+    OnDoneStream = UpdateDownloaderDoneStream
+    Left = 472
+    Top = 256
   end
 end

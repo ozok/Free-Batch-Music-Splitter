@@ -7,12 +7,12 @@ uses
   madListProcesses,
   madListModules,
   Vcl.Forms,
-  UnitMain in 'Forms\UnitMain.pas' {MainForm},
+  UnitMain in 'Forms\UnitMain.pas' {MainForm} ,
   UnitFileInfoExtractor in 'Units\UnitFileInfoExtractor.pas',
   UnitFileListItem in 'Units\UnitFileListItem.pas',
   UnitEncoder in 'Units\UnitEncoder.pas',
-  UnitBusy in 'Forms\UnitBusy.pas' {BusyForm},
-  UnitLogs in 'Forms\UnitLogs.pas' {LogsForm},
+  UnitBusy in 'Forms\UnitBusy.pas' {BusyForm} ,
+  UnitLogs in 'Forms\UnitLogs.pas' {LogsForm} ,
   UnitAbout in 'Forms\UnitAbout.pas' {AboutForm};
 
 {$R *.res}
