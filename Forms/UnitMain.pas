@@ -3,48 +3,39 @@ unit UnitMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, UnitFileInfoExtractor, UnitFileListItem, UnitEncoder,
-  Vcl.Mask, JvExMask, JvToolEdit, Vcl.ExtCtrls, JvSpin, Vcl.Menus, ShellAPI,
-  JvExControls, JvArrowButton, JvComponentBase, JvSearchFiles, JvBaseDlg,
-  JvBrowseFolder, StrUtils, System.Win.TaskbarCore, Vcl.Taskbar,
-  JvComputerInfoEx, IniFiles, JvDragDrop, IdBaseComponent, IdThreadComponent,
-  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, JvUrlListGrabber,
-  JvUrlGrabbers;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, 
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, 
+  Vcl.ComCtrls, UnitFileInfoExtractor, UnitFileListItem, UnitEncoder, Vcl.Mask, 
+  JvExMask, JvToolEdit, Vcl.ExtCtrls, JvSpin, Vcl.Menus, ShellAPI, JvExControls, 
+  JvArrowButton, JvComponentBase, JvSearchFiles, JvBaseDlg, JvBrowseFolder, StrUtils, 
+  System.Win.TaskbarCore, Vcl.Taskbar, JvComputerInfoEx, IniFiles, JvDragDrop, IdBaseComponent, 
+  IdThreadComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, JvUrlListGrabber, 
+  JvUrlGrabbers, acProgressBar, sLabel, sDialogs, sComboBox, sStatusBar,
+  sCheckBox, sPageControl, sBevel, sButton, sListView, sPanel, sSkinManager,
+  sSkinProvider, sMaskEdit, sCustomComboEdit, sToolEdit, sEdit, sSpinEdit,
+  Vcl.Buttons, sBitBtn, sGauge, DateUtils;
 
 type
   TMainForm = class(TForm)
-    FileList: TListView;
-    OpenDialog: TOpenDialog;
-    StartBtn: TButton;
-    OutputFolderEdit: TJvDirectoryEdit;
-    NormalPanel: TPanel;
-    ProgressPanel: TPanel;
-    ProgressList: TListView;
-    StopBtn: TButton;
-    ProgressBar1: TProgressBar;
+    FileList: TsListView;
+    OpenDialog: TsOpenDialog;
+    StartBtn: TsBitBtn;
+    NormalPanel: TsPanel;
+    ProgressPanel: TsPanel;
+    ProgressList: TsListView;
     ProgressTimer: TTimer;
-    Label1: TLabel;
-    RemoveSelectedBtn: TButton;
-    ClearBtn: TButton;
-    SplitTypePages: TPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    PartCountEdit: TJvSpinEdit;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    SecondsEdit: TJvSpinEdit;
-    MiliSecondsEdit: TJvSpinEdit;
-    Label5: TLabel;
-    MinutesEdit: TJvSpinEdit;
-    ApplyToFileBtn: TButton;
+    Label1: TsLabel;
+    RemoveSelectedBtn: TsBitBtn;
+    ClearBtn: TsBitBtn;
+    SplitTypePages: TsPageControl;
+    TabSheet1: TsTabSheet;
+    TabSheet2: TsTabSheet;
+    ApplyToFileBtn: TsButton;
     MainMenu1: TMainMenu;
     F1: TMenuItem;
     E1: TMenuItem;
     S1: TMenuItem;
-    OpenOutputBtn: TButton;
-    AddBtn: TJvArrowButton;
+    OpenOutputBtn: TsButton;
     AddFileMenu: TPopupMenu;
     A1: TMenuItem;
     A2: TMenuItem;
@@ -57,25 +48,40 @@ type
     C1: TMenuItem;
     FileSearch: TJvSearchFiles;
     OpenFolderDlg: TJvBrowseForFolderDialog;
-    ProgressLabel: TLabel;
-    StatusBar1: TStatusBar;
-    DefaultPartBtn: TCheckBox;
-    DefaultTimeBtn: TCheckBox;
-    Bevel1: TBevel;
-    NumberOfProcessList: TComboBox;
-    Label6: TLabel;
-    CheckUpdatesBtn: TCheckBox;
-    ApplyToAllBtn: TButton;
-    LogsBtn: TButton;
-    Button1: TButton;
-    OutputFolderOptionsList: TComboBox;
+    StatusBar1: TsStatusBar;
+    DefaultPartBtn: TsCheckBox;
+    DefaultTimeBtn: TsCheckBox;
+    Bevel1: TsBevel;
+    NumberOfProcessList: TsComboBox;
+    CheckUpdatesBtn: TsCheckBox;
+    ApplyToAllBtn: TsButton;
+    LogsBtn: TsBitBtn;
+    OutputFolderOptionsList: TsComboBox;
     Taskbar: TTaskbar;
-    Button2: TButton;
     Info: TJvComputerInfoEx;
     DragDrop1: TJvDragDrop;
-    DonateBtn: TButton;
+    DonateBtn: TsBitBtn;
     UpdateCheckThread: TIdThreadComponent;
     UpdateDownloader: TJvHttpUrlGrabber;
+    sSkinProvider1: TsSkinProvider;
+    sSkinManager1: TsSkinManager;
+    OutputFolderEdit: TsDirectoryEdit;
+    PartCountEdit: TsSpinEdit;
+    MinutesEdit: TsSpinEdit;
+    SecondsEdit: TsSpinEdit;
+    MiliSecondsEdit: TsSpinEdit;
+    AddBtn: TsBitBtn;
+    ToolBar: TsPanel;
+    RightPanel: TsPanel;
+    BottomPanel: TsPanel;
+    sPanel1: TsPanel;
+    sBitBtn3: TsBitBtn;
+    sBitBtn6: TsBitBtn;
+    Button2: TsButton;
+    StopBtn: TsBitBtn;
+    sPanel2: TsPanel;
+    ProgressLabel: TsLabel;
+    TotalProgressBar: TsGauge;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure StartBtnClick(Sender: TObject);
@@ -105,6 +111,7 @@ type
     procedure C1Click(Sender: TObject);
     procedure UpdateCheckThreadRun(Sender: TIdThreadComponent);
     procedure UpdateDownloaderDoneStream(Sender: TObject; Stream: TStream; StreamSize: Integer; Url: string);
+    procedure AddBtnClick(Sender: TObject);
   private
     { Private declarations }
     FFileInfo: TFileInfoExtractor;
@@ -113,6 +120,7 @@ type
     FFmpegPath: string;
     FCMDCount: integer;
     FLastDirectory: string;
+    FStartDateTime: TDateTime;
 
     procedure AddFile(const FileName: string);
 
@@ -142,7 +150,7 @@ var
 
 const
   VERSION_FILE_URL = 'http://downloads.sourceforge.net/project/free-batch-music-splitter/version.txt?r=&ts=1442779171&use_mirror=netcologne';
-  PROGRAM_VERSION = 1;
+  PROGRAM_VERSION = 2;
   PORTABLE = False;
 
 
@@ -156,6 +164,11 @@ procedure TMainForm.A1Click(Sender: TObject);
 var
   I: Integer;
 begin
+  if DirectoryExists(FLastDirectory) then
+  begin
+    OpenDialog.InitialDir := FLastDirectory;
+  end;
+
   if OpenDialog.Execute then
   begin
     StopAddingFiles := False;
@@ -196,6 +209,11 @@ var
   LFileExt: string;
   LFileName: string;
 begin
+  if DirectoryExists(FLastDirectory) then
+  begin
+    OpenFolderDlg.Directory := FLastDirectory;
+  end;
+
   if OpenFolderDlg.Execute then
   begin
     Self.Enabled := False;
@@ -234,6 +252,11 @@ end;
 
 procedure TMainForm.A3Click(Sender: TObject);
 begin
+  if DirectoryExists(FLastDirectory) then
+  begin
+    OpenFolderDlg.Directory := FLastDirectory;
+  end;
+
   if OpenFolderDlg.Execute then
   begin
     Self.Enabled := False;
@@ -259,6 +282,15 @@ procedure TMainForm.A8Click(Sender: TObject);
 begin
   Self.Enabled := False;
   AboutForm.Show;
+end;
+
+procedure TMainForm.AddBtnClick(Sender: TObject);
+var
+  P: TPoint;
+begin
+  P := AddBtn.ClientToScreen(Point(0, 0));
+
+  AddFileMenu.Popup(P.X, P.Y + AddBtn.Height)
 end;
 
 procedure TMainForm.AddFile(const FileName: string);
@@ -311,6 +343,8 @@ begin
       begin
         LItem.SubItems.Add('Parts with ' + SplitTimesToStr(Round(MinutesEdit.Value), Round(SecondsEdit.Value), Round(MiliSecondsEdit.Value)) + ' length');
       end;
+
+      FLastDirectory := ExtractFileDir(FileName);
     end;
   end;
 end;
@@ -682,6 +716,7 @@ begin
       WriteInteger('general', 'numofprocess', NumberOfProcessList.ItemIndex);
       WriteBool('general', 'update', CheckUpdatesBtn.Checked);
       WriteInteger('general', 'foldermethod', OutputFolderOptionsList.ItemIndex);
+      WriteString('general', 'lastdir', FLastDirectory);
     end;
   finally
     LSettingsFile.Free;
@@ -914,7 +949,6 @@ begin
 
     AddToLog('Number of jobs to run: ' + FloatToStr(FCMDCount));
     AddToLog('Starting to split.');
-    AddToLog('');
 
     for I := Low(FProcesses) to High(FProcesses) do
     begin
@@ -927,7 +961,9 @@ begin
       end;
     end;
 
-    ProgressBar1.Max := FCMDCount;
+    FStartDateTime := Now;
+
+    TotalProgressBar.MaxValue := FCMDCount;
     Taskbar.ProgressState := TTaskBarProgressState.Normal;
     Taskbar.ProgressMaxValue := FCMDCount;
     Self.Caption := '[0%] Free Batch Music Splitter';
@@ -949,6 +985,9 @@ begin
       end;
     end;
     EnableUI;
+    ProgressTimer.Enabled := False;
+    AddToLog('Stopped by user.');
+    AddToLog('');
   end;
 end;
 
@@ -1118,6 +1157,7 @@ begin
       NumberOfProcessList.ItemIndex := ReadInteger('general', 'numofprocess', 0);
       CheckUpdatesBtn.Checked := ReadBool('general', 'update', True);
       OutputFolderOptionsList.ItemIndex := ReadInteger('general', 'foldermethod', 0);
+      FLastDirectory := ReadString('general', 'lastdir', Info.Folders.Personal);
     end;
   finally
     LSettingsFile.Free;
@@ -1141,6 +1181,7 @@ procedure TMainForm.ProgressTimerTimer(Sender: TObject);
 var
   LProgress: integer;
   I: Integer;
+  LDiffAsSec: int64;
 begin
   // calculate progress
   LProgress := 0;
@@ -1156,11 +1197,16 @@ begin
   begin
     // done
     EnableUI;
+    ProgressTimer.Enabled := False;
+    AddToLog('Finished splitting.');
+    LDiffAsSec := SecondsBetween(Now, FStartDateTime);
+    AddToLog(Format('Took %2.2d:%2.2d.',[LDiffAsSec div 60, LDiffAsSec mod 60]));
+    AddToLog('');
   end
   else
   begin
     // still working
-    ProgressBar1.Position := LProgress;
+    TotalProgressBar.Progress := LProgress;
     ProgressLabel.Caption := FloatToStr(LProgress) + '/' + FloatToStr(FCMDCount);
     Self.Caption := '[' + FloatToStr((100 * LProgress) div FCMDCount) + '%] Free Batch Music Splitter';
     Taskbar.ProgressValue := LProgress;

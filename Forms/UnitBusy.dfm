@@ -21,7 +21,7 @@ object BusyForm: TBusyForm
   TextHeight = 13
   object ProgressLabel: TLabel
     Left = 8
-    Top = 14
+    Top = 8
     Width = 66
     Height = 13
     Caption = 'Please wait...'
@@ -35,5 +35,17 @@ object BusyForm: TBusyForm
     Caption = 'Stop'
     TabOrder = 0
     OnClick = AbortBtnClick
+  end
+  object sSkinProvider1: TsSkinProvider
+    AddedTitle.Font.Charset = DEFAULT_CHARSET
+    AddedTitle.Font.Color = clNone
+    AddedTitle.Font.Height = -11
+    AddedTitle.Font.Name = 'Tahoma'
+    AddedTitle.Font.Style = []
+    FormHeader.AdditionalHeight = 0
+    SkinData.SkinSection = 'FORM'
+    TitleButtons = <>
+    Left = 224
+    Top = 8
   end
 end

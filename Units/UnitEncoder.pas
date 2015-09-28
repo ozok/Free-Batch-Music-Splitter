@@ -235,7 +235,7 @@ begin
       end;
       FEncoderStatus := esEncoding;
       FItem := MainForm.ProgressList.Items.Add;
-      FItem.Caption := ExtractFileName(FEncodeJobs[FCommandIndex].SourceFileName);
+      FItem.Caption := FEncodeJobs[FCommandIndex].SourceFileName;
       FItem.SubItems.Add(FEncodeJobs[FCommandIndex].EncodingInformation);
       FItem.SubItems.Add('Splitting');
       FItem.StateIndex := 0;
@@ -276,7 +276,7 @@ begin
         end;
         FEncoderStatus := esEncoding;
         FItem := MainForm.ProgressList.Items.Add;
-        FItem.Caption := ExtractFileName(GetFileName);
+        FItem.Caption := GetFileName;
         FItem.SubItems.Add(GetInfo);
         FItem.SubItems.Add('Splitting');
         FItem.StateIndex := 0;

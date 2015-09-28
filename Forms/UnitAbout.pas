@@ -3,24 +3,25 @@ unit UnitAbout;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, acPNG, Vcl.ExtCtrls, ShellAPI;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, 
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, 
+  acPNG, Vcl.ExtCtrls, ShellAPI, sSkinProvider, sButton, sLabel, acImage;
 
 type
   TAboutForm = class(TForm)
-    Image1: TImage;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
+    Label1: TsLabel;
+    Label2: TsLabel;
+    Label3: TsLabel;
+    Label4: TsLabel;
+    Label5: TsLabel;
+    Button1: TsButton;
+    Button2: TsButton;
+    Button3: TsButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button3Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -55,6 +56,15 @@ procedure TAboutForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   MainForm.Enabled := True;
   MainForm.BringToFront;
+end;
+
+procedure TAboutForm.FormCreate(Sender: TObject);
+begin
+  {$IFDEF WIN64}
+    Label2.Caption := Label2.Caption + ' 64bit';
+  {$ELSE}
+    Label2.Caption := Label2.Caption + ' 32bit';
+  {$ENDIF}
 end;
 
 end.

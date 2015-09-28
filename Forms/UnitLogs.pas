@@ -3,15 +3,16 @@ unit UnitLogs;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Generics.Collections;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, 
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Generics.Collections,
+  sSkinProvider, sButton, sComboBox, sMemo;
 
 type
   TLogsForm = class(TForm)
-    LogsList: TMemo;
-    LogIndexList: TComboBox;
-    Button1: TButton;
-    RefreshBtn: TButton;
+    LogsList: TsMemo;
+    LogIndexList: TsComboBox;
+    Button1: TsButton;
+    RefreshBtn: TsButton;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
