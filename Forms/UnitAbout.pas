@@ -3,8 +3,8 @@ unit UnitAbout;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, 
-  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, 
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   acPNG, Vcl.ExtCtrls, ShellAPI, sSkinProvider, sButton, sLabel, acImage;
 
 type
@@ -39,7 +39,7 @@ uses UnitMain;
 
 procedure TAboutForm.Button1Click(Sender: TObject);
 begin
-  ShellExecute(0, 'open', 'https://sourceforge.net/projects/free-batch-music-splitter/', nil, nil, SW_SHOWNORMAL);
+  ShellExecute(0, 'open', 'http://www.ozok26.com/free-batch-musc-spltter-2', nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TAboutForm.Button2Click(Sender: TObject);
@@ -60,11 +60,11 @@ end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
-  {$IFDEF WIN64}
-    Label2.Caption := Label2.Caption + ' 64bit';
-  {$ELSE}
-    Label2.Caption := Label2.Caption + ' 32bit';
-  {$ENDIF}
+{$IFDEF WIN64}
+  Label2.Caption := Label2.Caption + ' 64bit';
+{$ELSE}
+  Label2.Caption := Label2.Caption + ' 32bit';
+{$ENDIF}
 end;
 
 end.

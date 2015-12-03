@@ -47,14 +47,8 @@ object LogsForm: TLogsForm
     Alignment = taLeftJustify
     VerticalAlignment = taAlignTop
     Style = csDropDownList
-    Color = clGradientActiveCaption
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
+    Color = clWhite
     ItemIndex = 0
-    ParentFont = False
     TabOrder = 1
     Text = 'Program Log'
     OnChange = LogIndexListChange

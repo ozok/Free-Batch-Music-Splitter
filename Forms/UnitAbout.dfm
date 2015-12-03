@@ -41,7 +41,7 @@ object AboutForm: TAboutForm
     Height = 13
     Align = alTop
     Alignment = taCenter
-    Caption = 'Version 1.1'
+    Caption = 'Version 1.2'
     ExplicitWidth = 54
   end
   object Label3: TsLabel

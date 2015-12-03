@@ -3,13 +3,13 @@ unit UnitMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, 
-  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, 
-  Vcl.ComCtrls, UnitFileInfoExtractor, UnitFileListItem, UnitEncoder, Vcl.Mask, 
-  JvExMask, JvToolEdit, Vcl.ExtCtrls, JvSpin, Vcl.Menus, ShellAPI, JvExControls, 
-  JvArrowButton, JvComponentBase, JvSearchFiles, JvBaseDlg, JvBrowseFolder, StrUtils, 
-  System.Win.TaskbarCore, Vcl.Taskbar, JvComputerInfoEx, IniFiles, JvDragDrop, IdBaseComponent, 
-  IdThreadComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, JvUrlListGrabber, 
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
+  Vcl.ComCtrls, UnitFileInfoExtractor, UnitFileListItem, UnitEncoder, Vcl.Mask,
+  JvExMask, JvToolEdit, Vcl.ExtCtrls, JvSpin, Vcl.Menus, ShellAPI, JvExControls,
+  JvArrowButton, JvComponentBase, JvSearchFiles, JvBaseDlg, JvBrowseFolder, StrUtils,
+  System.Win.TaskbarCore, Vcl.Taskbar, JvComputerInfoEx, IniFiles, JvDragDrop, IdBaseComponent,
+  IdThreadComponent, IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, JvUrlListGrabber,
   JvUrlGrabbers, acProgressBar, sLabel, sDialogs, sComboBox, sStatusBar,
   sCheckBox, sPageControl, sBevel, sButton, sListView, sPanel, sSkinManager,
   sSkinProvider, sMaskEdit, sCustomComboEdit, sToolEdit, sEdit, sSpinEdit,
@@ -63,8 +63,6 @@ type
     DonateBtn: TsBitBtn;
     UpdateCheckThread: TIdThreadComponent;
     UpdateDownloader: TJvHttpUrlGrabber;
-    sSkinProvider1: TsSkinProvider;
-    sSkinManager1: TsSkinManager;
     OutputFolderEdit: TsDirectoryEdit;
     PartCountEdit: TsSpinEdit;
     MinutesEdit: TsSpinEdit;
@@ -82,6 +80,7 @@ type
     sPanel2: TsPanel;
     ProgressLabel: TsLabel;
     TotalProgressBar: TsGauge;
+    NamingOptionList: TsComboBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure StartBtnClick(Sender: TObject);
@@ -150,9 +149,8 @@ var
 
 const
   VERSION_FILE_URL = 'http://downloads.sourceforge.net/project/free-batch-music-splitter/version.txt?r=&ts=1442779171&use_mirror=netcologne';
-  PROGRAM_VERSION = 2;
+  PROGRAM_VERSION = 3;
   PORTABLE = False;
-
 
 implementation
 
@@ -816,6 +814,7 @@ begin
     FProcesses[i].ResetValues;
   end;
 
+  // number of parallel processes
   LNumberOfProcesses := NumberOfProcessList.ItemIndex + 1;
   AddToLog('Number of parallel process: ' + FloatToStr(LNumberOfProcesses));
 
@@ -833,7 +832,9 @@ begin
       // todo: convert this if to case as there can be more options in the future
       if LFile.SplitType = stIntoParts then
       begin
+        // length of a chunk
         LChunkLength := LFile.DurationAsInt div LFile.PartsCount;
+        // calculate last chunks duration
         if (LChunkLength * LFile.PartsCount) < LFile.DurationAsInt then
         begin
           LLastChunkDuration := LFile.DurationAsInt - (LChunkLength * (LFile.PartsCount - 1));
@@ -853,20 +854,42 @@ begin
           // see http://www.moserware.com/2008/02/does-your-code-pass-turkey-test.html
           LCurrentPositionStr := FloatToStr(LCurrentPosition / 1000).Replace(',', '.');
 
+          // create output file name
           LFileExt := ExtractFileExt(LFile.FullFilePath);
-          LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath) + ExtractFileName(LFile.FullFilePath), '_' + FloatToStr(j) + LFileExt);
+          case NamingOptionList.ItemIndex of
+            0:
+              begin
+                LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath) + ExtractFileName(LFile.FullFilePath), '_' + FloatToStr(j) + LFileExt);
+              end;
+            1:
+              begin
+                LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath) + FloatToStr(j) + '_' + ExtractFileName(LFile.FullFilePath), LFileExt);
+              end;
+            2:
+              begin
+                LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath), FloatToStr(j) + LFileExt);
+              end;
+            3:
+              begin
+                LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath), FloatToStr(j) + '_' + FloatToStr(i + 1) + LFileExt);
+              end;
+            4:
+              begin
+                LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath), FloatToStr(i + 1) + '_' + FloatToStr(j) + LFileExt);
+              end;
+          end;
 
           if j = LFile.PartsCount then
           begin
             // last chunk is a bit different
             LChunkLengthStr := FloatToStr(LLastChunkDuration / 1000).Replace(',', '.');
-            LJob.CommandLine := ' -ss ' + LCurrentPositionStr + ' -y -i "' + LFile.FullFilePath + '" -vn -c:a copy -t ' + LChunkLengthStr + ' "' + LOutputFileName + '"';
+            LJob.CommandLine := ' -v 9 -loglevel 99 -ss ' + LCurrentPositionStr + ' -y -i "' + LFile.FullFilePath + '" -vn -c:a copy -t ' + LChunkLengthStr + ' "' + LOutputFileName + '"';
           end
           else
           begin
             // a normal chunk
             LChunkLengthStr := FloatToStr(LChunkLength / 1000).Replace(',', '.');
-            LJob.CommandLine := ' -ss ' + LCurrentPositionStr + ' -y -i "' + LFile.FullFilePath + '" -vn -c:a copy -t ' + LChunkLengthStr + ' "' + LOutputFileName + '"';
+            LJob.CommandLine := ' -v 9 -loglevel 99 -ss ' + LCurrentPositionStr + ' -y -i "' + LFile.FullFilePath + '" -vn -c:a copy -t ' + LChunkLengthStr + ' "' + LOutputFileName + '"';
           end;
 
           LJob.ProcessPath := FFmpegPath;
@@ -883,11 +906,12 @@ begin
       end
       else if LFile.SplitType = stAccordingToDuration then
       begin
+        // chunk duration is predefined so we calculate the number of chunks
         LSplitChunkLength := SplitTimesToInt2(LFile.SplitMinute, LFile.SplitSecond, LFile.SplitMiliSeconds);
         if LFile.DurationAsInt > SplitTimesToInt2(LFile.SplitMinute, LFile.SplitSecond, LFile.SplitMiliSeconds) then
         begin
           LNumberOfChunks := LFile.DurationAsInt div LSplitChunkLength;
-
+          // last chunk's duraion
           if (LSplitChunkLength * LNumberOfChunks) < LFile.DurationAsInt then
           begin
             LLastChunkDuration := LFile.DurationAsInt - (LSplitChunkLength * (LNumberOfChunks - 1));
@@ -907,21 +931,42 @@ begin
             // Turkish uses "," instead of "."
             // see http://www.moserware.com/2008/02/does-your-code-pass-turkey-test.html
             LCurrentPositionStr := FloatToStr(LCurrentPosition / 1000).Replace(',', '.');
-
+            // create output file name
             LFileExt := ExtractFileExt(LFile.FullFilePath);
-            LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath) + ExtractFileName(LFile.FullFilePath), '_' + FloatToStr(j) + LFileExt);
+            case NamingOptionList.ItemIndex of
+              0:
+                begin
+                  LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath) + ExtractFileName(LFile.FullFilePath), '_' + FloatToStr(j) + LFileExt);
+                end;
+              1:
+                begin
+                  LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath) + FloatToStr(j) + '_' + ExtractFileName(LFile.FullFilePath), LFileExt);
+                end;
+              2:
+                begin
+                  LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath), FloatToStr(j) + LFileExt);
+                end;
+              3:
+                begin
+                  LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath), FloatToStr(j) + '_' + FloatToStr(i + 1) + LFileExt);
+                end;
+              4:
+                begin
+                  LOutputFileName := ChangeFileExt(OutputFolderEdit.Text + '\' + CreateFolder(LFile.FullFilePath), FloatToStr(i + 1) + '_' + FloatToStr(j) + LFileExt);
+                end;
+            end;
 
             if j = LNumberOfChunks then
             begin
               // last chunk is a bit different
               LChunkLengthStr := FloatToStr(LLastChunkDuration / 1000).Replace(',', '.');
-              LJob.CommandLine := ' -ss ' + LCurrentPositionStr + ' -y -i "' + LFile.FullFilePath + '" -vn -c:a copy -t ' + LChunkLengthStr + ' "' + LOutputFileName + '"';
+              LJob.CommandLine := ' -v 9 -loglevel 99 -ss ' + LCurrentPositionStr + ' -y -i "' + LFile.FullFilePath + '" -vn -c:a copy -t ' + LChunkLengthStr + ' "' + LOutputFileName + '"';
             end
             else
             begin
               // a normal chunk
               LChunkLengthStr := FloatToStr(LSplitChunkLength / 1000).Replace(',', '.');
-              LJob.CommandLine := ' -ss ' + LCurrentPositionStr + ' -y -i "' + LFile.FullFilePath + '" -vn -c:a copy -t ' + LChunkLengthStr + ' "' + LOutputFileName + '"';
+              LJob.CommandLine := ' -v 9 -loglevel 99 -ss ' + LCurrentPositionStr + ' -y -i "' + LFile.FullFilePath + '" -vn -c:a copy -t ' + LChunkLengthStr + ' "' + LOutputFileName + '"';
             end;
 
             LJob.ProcessPath := FFmpegPath;
@@ -945,11 +990,12 @@ begin
     BusyForm.Close;
     Self.BringToFront;
 
+    // prepare to show progress
     DisableUI;
 
     AddToLog('Number of jobs to run: ' + FloatToStr(FCMDCount));
     AddToLog('Starting to split.');
-
+    // launch processes
     for I := Low(FProcesses) to High(FProcesses) do
     begin
       Application.ProcessMessages;
@@ -1018,7 +1064,7 @@ begin
         begin
           if ID_YES = Application.MessageBox('There is a new version. Would you like to download it?', 'New Version', MB_ICONQUESTION or MB_YESNO) then
           begin
-            ShellExecute(0, 'open', 'https://sourceforge.net/projects/free-batch-music-splitter/', nil, nil, SW_SHOWNORMAL);
+            ShellExecute(0, 'open', 'http://www.ozok26.com/free-batch-musc-spltter-2', nil, nil, SW_SHOWNORMAL);
           end;
         end;
       end;
@@ -1032,6 +1078,7 @@ procedure TMainForm.FileListClick(Sender: TObject);
 var
   LItem: TFileListItem;
 begin
+  // update options according to selected item
   if FileList.ItemIndex > -1 then
   begin
     LItem := FFiles[FileList.ItemIndex];
@@ -1071,6 +1118,7 @@ var
   i: Integer;
 begin
   SaveSettings;
+  // stop processes in case user terminates the program in mid-split
   for I := Low(FProcesses) to High(FProcesses) do
   begin
     if FProcesses[i].ProcessID > 0 then
@@ -1094,6 +1142,7 @@ begin
   end;
   FileSearch.RecurseDepth := MaxInt;
 
+  // output and appdata folders
   if not PORTABLE then
   begin
     AppDataFolder := Info.Folders.AppData + '\FreeBatchMusicSplitter';
@@ -1200,7 +1249,7 @@ begin
     ProgressTimer.Enabled := False;
     AddToLog('Finished splitting.');
     LDiffAsSec := SecondsBetween(Now, FStartDateTime);
-    AddToLog(Format('Took %2.2d:%2.2d.',[LDiffAsSec div 60, LDiffAsSec mod 60]));
+    AddToLog(Format('Took %2.2d:%2.2d.', [LDiffAsSec div 60, LDiffAsSec mod 60]));
     AddToLog('');
   end
   else

@@ -52,6 +52,8 @@ type
 
 implementation
 
+uses UnitLogs;
+
 { TFileInfoExtractor }
 
 function TFileInfoExtractor.CodecToExtension(const AudioCodec: string): string;
@@ -146,7 +148,7 @@ var
 begin
   FFFMpegStatus := Reading;
   try
-    FDurationStr :=FFFMpegProcess.ConsoleOutput.Text;
+    FDurationStr := FFFMpegProcess.ConsoleOutput.Text;
     LDotPos := Pos('.', FDurationStr);
     if LDotPos > 0 then
     begin
@@ -165,6 +167,7 @@ begin
 
   FFileName := FileName;
   FFFMpegProcess.CommandLine := '-y -i "' + FileName + '" -show_entries format=duration -v quiet -of csv="p=0"';
+  LogsForm.Logs[0].Add('"' + FFFMpegProcess.ApplicationName + '" ' + FFFMpegProcess.CommandLine);
   FFFMpegProcess.Run;
   FFFMpegStatus := Reading;
 end;
